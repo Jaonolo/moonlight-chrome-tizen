@@ -807,7 +807,8 @@ function startGame(host, appID) {
             host.appVersion,
             /*host.gfeVersion*/"",
             framePacingEnabled,
-            audioSyncEnabled
+            audioSyncEnabled,
+            $root.find('sessionUrl0').text().trim()
           ]);
         }, function(failedResumeApp) {
           console.error('%c[index.js, startGame]', 'color:green;', 'Failed to resume the app! Returned error was' + failedResumeApp);
@@ -846,7 +847,8 @@ function startGame(host, appID) {
           host.appVersion,
           "",
           framePacingEnabled,
-          audioSyncEnabled
+          audioSyncEnabled,
+          $root.find('sessionUrl0').text().trim()
         ]);
       }, function(failedLaunchApp) {
         console.error('%c[index.js, launchApp]', 'color: green;', 'Failed to launch app width id: ' + appID + '\nReturned error was: ' + failedLaunchApp);
