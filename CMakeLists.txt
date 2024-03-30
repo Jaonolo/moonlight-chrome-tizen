@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
-
 project(MoonlightWasm VERSION 1.0)
-
 add_compile_options(-w -s WASM=1 -fno-ident -Os -flto -DSAMSUNG_WRT -DOS_WASM -DNDEBUG)
 
+# moonlight-rs
 add_library(moonlight-rs STATIC
     moonlight-common-c/reedsolomon/rs.c)
 target_include_directories(moonlight-rs PUBLIC
     moonlight-common-c/reedsolomon)
 target_compile_features(moonlight-rs PUBLIC c_std_99)
 
+# moonlight-enet
 add_library(moonlight-enet STATIC
     moonlight-common-c/enet/callbacks.c
     moonlight-common-c/enet/compress.c
@@ -18,8 +18,7 @@ add_library(moonlight-enet STATIC
     moonlight-common-c/enet/packet.c
     moonlight-common-c/enet/peer.c
     moonlight-common-c/enet/protocol.c
-    moonlight-common-c/enet/unix.c
-)
+    moonlight-common-c/enet/unix.c)
 target_compile_definitions(moonlight-enet PUBLIC
     LC_CHROME
     HAS_SOCKLEN_T=1
@@ -27,8 +26,10 @@ target_compile_definitions(moonlight-enet PUBLIC
     NO_MSGAPI=1
     HAS_SOCKLEN_T=1)
 target_include_directories(moonlight-enet PUBLIC
-    moonlight-common-c/enet/include)
+    moonlight-common-c/enet/include
+)
 
+# moonlight-common-c
 add_library(moonlight-common-c STATIC
     moonlight-common-c/src/AudioStream.c
     moonlight-common-c/src/ByteBuffer.c
@@ -48,8 +49,7 @@ add_library(moonlight-common-c STATIC
     moonlight-common-c/src/SdpGenerator.c
     moonlight-common-c/src/SimpleStun.c
     moonlight-common-c/src/VideoDepacketizer.c
-    moonlight-common-c/src/VideoStream.c
-)
+    moonlight-common-c/src/VideoStream.c)
 target_compile_definitions(moonlight-common-c PUBLIC
     LC_CHROME)
 target_include_directories(moonlight-common-c PUBLIC
@@ -60,29 +60,32 @@ target_compile_features(moonlight-common-c PUBLIC c_std_99)
 set_target_properties(moonlight-common-c
     PROPERTIES
         COMPILE_FLAGS
-            "-s USE_CRYPTO=1 -s USE_SSL=1")
+            "-s USE_CRYPTO=1 -s USE_SSL=1"
+)
 
+# libgamestream
 add_library(libgamestream STATIC
     libgamestream/http.c
     libgamestream/mkcert.c
-    libgamestream/pairing.c
-)
+    libgamestream/pairing.c)
 target_include_directories(libgamestream PUBLIC
     libgamestream)
 set_target_properties(libgamestream
     PROPERTIES
         COMPILE_FLAGS
-            "-s USE_CRYPTO=1 -s USE_SSL=1 -s USE_CURL=1")
+            "-s USE_CRYPTO=1 -s USE_SSL=1 -s USE_CURL=1"
+)
 
+# h264bitstream
 add_library(h264bitstream STATIC
     h264bitstream/h264_nal.c
     h264bitstream/h264_sei.c
-    h264bitstream/h264_stream.c
-)
+    h264bitstream/h264_stream.c)
 target_include_directories(h264bitstream PUBLIC
     h264bitstream)
 target_compile_features(h264bitstream PUBLIC c_std_99)
 
+# opus
 add_library(opus STATIC
     opus/celt/bands.c
     opus/celt/celt.c
@@ -212,8 +215,7 @@ add_library(opus STATIC
     opus/src/opus_multistream.c
     opus/src/opus_multistream_decoder.c
     opus/src/opus_multistream_encoder.c
-    opus/src/repacketizer.c
-)
+    opus/src/repacketizer.c)
 target_include_directories(opus PUBLIC
     opus/include
     opus/src
@@ -221,23 +223,24 @@ target_include_directories(opus PUBLIC
     opus/celt
     opus/silk/fixed)
 target_compile_definitions(opus PUBLIC
-     USE_ALLOCA
-     HAVE_LRINT
-     HAVE_LRINTF
-     FIXED_POINT
-     OPUS_BUILD)
+    USE_ALLOCA
+    HAVE_LRINT
+    HAVE_LRINTF
+    FIXED_POINT
+    OPUS_BUILD
+)
 
+# moonlight-wasm
 add_executable(moonlight-wasm
-    libchelper.c
-    profiling.cpp
+    wasm/libchelper.c
+    wasm/profiling.cpp
     wasm/auddec.cpp
     wasm/connectionlistener.cpp
     wasm/gamepad.cpp
     wasm/http.cpp
     wasm/input.cpp
     wasm/main.cpp
-    wasm/wasmplayer.cpp
-)
+    wasm/wasmplayer.cpp)
 target_include_directories(moonlight-wasm PUBLIC
     wasm
     wasm/dispatcher
@@ -250,8 +253,7 @@ target_include_directories(moonlight-wasm PUBLIC
     opus/src
     opus/silk
     opus/silk/fixed
-    opus/celt
-)
+    opus/celt)
 set_target_properties(moonlight-wasm
     PROPERTIES
         COMPILE_FLAGS
@@ -297,4 +299,3 @@ install(DIRECTORY wasm/platform DESTINATION widget)
 install(FILES wasm/index.html DESTINATION widget)
 install(FILES res/config.xml DESTINATION widget)
 install(FILES res/platform.js DESTINATION widget)
-
